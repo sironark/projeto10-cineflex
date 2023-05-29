@@ -4,7 +4,7 @@ import { Link, useParams } from "react-router-dom";
 import styled from "styled-components"
 
 export default function SessionsPage() {
-
+    const [waiting, setWaiting] = useState(false);
     const [session, setSession] = useState([]);
     const [object, setObject] = useState({});
     const params = useParams();
@@ -16,6 +16,7 @@ export default function SessionsPage() {
         promisse.then((sessao) =>{
             setSession(sessao.data.days);
             setObject(sessao.data);
+            setWaiting(true)
         });
 
         promisse.catch((erro) => {
@@ -24,7 +25,11 @@ export default function SessionsPage() {
     });
 
 
-
+    if(session.length == 0){
+        
+        return <Loading></Loading>
+       
+   }else{
     return (
         <PageContainer>
             Selecione o horário
@@ -59,7 +64,26 @@ export default function SessionsPage() {
         </PageContainer>
     )
 }
+}
+const Loading = styled.div`
+   
+    animation: is-rotating 1s infinite;
+    border: 6px solid #e5e5e5;
+    border-radius: 50%;
+    border-top-color: #51d4db;
+    height: 50px;
+    width: 50px;
 
+    position: absolute;
+    top: 50%;
+    right: 50%;
+
+    @keyframes is-rotating {
+  to {
+    transform: rotate(1turn);
+  }
+}
+`
 const PageContainer = styled.div`
     display: flex;
     flex-direction: column;
@@ -89,6 +113,7 @@ const ButtonsContainer = styled.div`
     margin: 20px 0;
     button {
         margin-right: 20px;
+        cursor: pointer;
     }
     a {
         text-decoration: none;

@@ -25,7 +25,6 @@ export default function SeatsPage() {
         const promisse = axios.get(`https://mock-api.driven.com.br/api/v8/cineflex/showtimes/${params1.idSessao}/seats`)
 
         promisse.then((resposta) => {
-            console.log(resposta.data)
             setSeats(resposta.data)
             setWaiting(true)
             setCadeiraArray([]);
@@ -37,14 +36,12 @@ export default function SeatsPage() {
             console.log(erro.response.data)
         })
         
-
-       
     }, []);
 
 
 
     function selecionarCadeira(cadeira){
-        console.log(cadeira.isAvailable)
+        
         setFilme(seats.movie.title)
         setData(seats.day.date)
         setHora(seats.name)
@@ -59,9 +56,6 @@ export default function SeatsPage() {
             
             const auxCadeira = [...cadeiraArray, cadeira.name]
             setCadeiraArray(auxCadeira)
-
-
-
         }else{
             const arrayAux2 = [...arraySelecionados];
             const index = arrayAux2.indexOf(cadeira.id)
@@ -72,38 +66,37 @@ export default function SeatsPage() {
             const index1 = arrayAux3.indexOf(cadeira.name)
             arrayAux3.splice(index1, 1)
             setCadeiraArray(arrayAux3)
-            
         }
+
         
-
     }
-
     
 
     function reservar(e){
         e.preventDefault();
         const URL_API = "https://mock-api.driven.com.br/api/v8/cineflex/seats/book-many"
-
-        const objPost = {
-            ids: arraySelecionados,
-            name: name,
-            cpf: cpf
-        } 
         
-        const promisse = axios.post(URL_API, objPost)
-        promisse.then((resposta) => {
-            console.log(resposta)
-            console.log("salva")
-            navigate(`/sucesso`, {state:{cpf, name, filme, data, hora, cadeiraArray}})
+
+        if(cadeiraArray.length != 0){
+            const objPost = {
+                ids: arraySelecionados,
+                name: name,
+                cpf: cpf
+            } 
             
-        })
-        promisse.catch(erro => console.log(erro.response.data))
+            const promisse = axios.post(URL_API, objPost)
+            promisse.then(() => {
+                
+                navigate(`/sucesso`, {state:{cpf, name, filme, data, hora, cadeiraArray}})
+                
+            })
+            promisse.catch(erro => console.log(erro.response.data))
+        }
+        
     }
     
-
-
     if (waiting === false){
-        return <div>Carregando.....</div>
+        return <Loading></Loading>
     }else{
 
     return (
@@ -121,9 +114,7 @@ export default function SeatsPage() {
                     data-test="seat"
                     >
                     {cadeira.name}
-                    </SeatItem>
-                    
-                  
+                    </SeatItem>                
                 ))}
             </SeatsContainer>
 
@@ -148,8 +139,6 @@ export default function SeatsPage() {
                 </CaptionItem>
             </CaptionContainer>
 
-
-           
                 <FormContainer onSubmit={reservar}>
                     
                 <label htmlFor="name"> Nome do Comprador:</label>
@@ -163,9 +152,6 @@ export default function SeatsPage() {
                    
                 </FormContainer>
            
-
-
-            
             <FooterContainer data-test="footer">
                 <div>
                     <img src={seats.movie.posterURL} alt="poster" />
@@ -181,6 +167,25 @@ export default function SeatsPage() {
     }
 }
 
+const Loading = styled.div`
+   
+    animation: is-rotating 1s infinite;
+    border: 6px solid #e5e5e5;
+    border-radius: 50%;
+    border-top-color: #51d4db;
+    height: 50px;
+    width: 50px;
+
+    position: absolute;
+    top: 50%;
+    right: 50%;
+
+    @keyframes is-rotating {
+  to {
+    transform: rotate(1turn);
+  }
+}
+`
 const PageContainer = styled.div`
     display: flex;
     flex-direction: column;
@@ -211,6 +216,7 @@ const FormContainer = styled.form`
     font-size: 18px;
     button {
         align-self: center;
+        cursor: pointer;
     }
     input {
         width: calc(100vw - 60px);
@@ -252,6 +258,7 @@ const SeatItem = styled.div`
     align-items: center;
     justify-content: center;
     margin: 5px 3px;
+    cursor: ${props => (props.disponivel === false ? "not-allowed ": "pointer")};
 `
 const FooterContainer = styled.div`
     width: 100%;

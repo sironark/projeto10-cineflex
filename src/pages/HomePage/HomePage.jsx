@@ -2,15 +2,16 @@ import axios from "axios"
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import styled from "styled-components"
-//import { Link, useParams } from "react-router-dom"
 
 export default function HomePage() {
     const [arrayMovies, setArrayMovies] = useState([]);
+    const [waiting, setWaiting] = useState(false);
 
     useEffect(() => {
         const promisse = axios.get('https://mock-api.driven.com.br/api/v8/cineflex/movies');
         promisse.then((resposta) => {
             setArrayMovies(resposta.data);
+            setWaiting(true)
         });
         promisse.catch((erro) => {
             console.log(erro.response.data);
@@ -18,12 +19,10 @@ export default function HomePage() {
     },[]);
 
     
-    if(arrayMovies == []){
-        return (
-        <PageContainer>
-            Carregando.....
-        </PageContainer>
-        )
+    if(arrayMovies.length == 0){
+        
+         return <Loading></Loading>
+        
     }else{
     
     return (
@@ -33,23 +32,38 @@ export default function HomePage() {
             <ListContainer>
                 {arrayMovies.map(movie => (
                     <Link data-test="movie" to={`/sessoes/${movie.id}`} key={movie.id}>
-                    <MovieContainer >
-                        
-                            <img src={movie.posterURL} alt="poster"/>
-                       
-                </MovieContainer>
-                </Link>
-                ))}
-                
 
-              
+                        <MovieContainer >                        
+                            <img src={movie.posterURL} alt="poster"/>                       
+                        </MovieContainer>
+
+                    </Link>
+                ))} 
             </ListContainer>
 
         </PageContainer>
     )
                 }
 }
+const Loading = styled.div`
+   
+    animation: is-rotating 1s infinite;
+    border: 6px solid #e5e5e5;
+    border-radius: 50%;
+    border-top-color: #51d4db;
+    height: 50px;
+    width: 50px;
 
+    position: absolute;
+    top: 50%;
+    right: 50%;
+
+    @keyframes is-rotating {
+  to {
+    transform: rotate(1turn);
+  }
+}
+`
 const PageContainer = styled.div`
     display: flex;
     flex-direction: column;

@@ -1,16 +1,11 @@
-import { useEffect } from "react"
+
 import { useLocation, useNavigate } from "react-router-dom";
 import styled from "styled-components"
 
 export default function SuccessPage() {
     const navigate = useNavigate()
     const {cpf, name, filme, data, hora, cadeiraArray} = useLocation().state
-    useEffect (() => {
-        console.log(filme)
-        console.log(data)
-
-
-    } , []);
+   
 
 
     function bkHome(){
