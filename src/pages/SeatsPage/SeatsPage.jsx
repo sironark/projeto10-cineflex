@@ -31,14 +31,15 @@ export default function SeatsPage(props) {
             console.log(resposta.data)
             setSeats(resposta.data)
             setWaiting(true)
-           
-
+            setCadeiraArray([]);
+            
      
         })
 
         promisse.catch((erro) =>{
             console.log(erro.response.data)
         })
+        
 
        
     }, []);
@@ -47,7 +48,9 @@ export default function SeatsPage(props) {
 
     function selecionarCadeira(cadeira){
         console.log(cadeira.isAvailable)
-        
+        setFilme(seats.movie.title)
+        setData(seats.day.date)
+        setHora(seats.name)
         
         
 
@@ -59,6 +62,8 @@ export default function SeatsPage(props) {
             
             const auxCadeira = [...cadeiraArray, cadeira.name]
             setCadeiraArray(auxCadeira)
+
+
 
         }else{
             const arrayAux2 = [...arraySelecionados];
@@ -80,6 +85,8 @@ export default function SeatsPage(props) {
 
     function reservar(e){
         e.preventDefault();
+
+        
         
         //props.alerta(cpf, name, filme, data, hora, cadeiraArray)
 
@@ -92,9 +99,10 @@ export default function SeatsPage(props) {
         } 
 
         const promisse = axios.post(URL_API, objPost)
-        promisse.then(resposta => {
+        promisse.then((resposta) => {
+            console.log(resposta)
             console.log("salva")
-            navigate(`/success`)
+            navigate(`/success`, {state:{cpf, name, filme, data, hora, cadeiraArray}})
             
         })
         promisse.catch(erro => console.log(erro.response.data))
@@ -158,7 +166,7 @@ export default function SeatsPage(props) {
                     <input data-test="client-name" required placeholder="Digite seu nome..." id="name" value={name} onChange={(e)=> setName(e.target.value)}/>
 
                     <label htmlFor="cpf">  CPF do Comprador:</label>
-                    <input data-test="client-cpf" required placeholder="Digite seu CPF..." id="cpf"  value={cpf} onChange={(e)=> setCpf(e.target.value)}/>
+                    <input pattern="\d{3}\.\d{3}\.\d{3}-\d{2}" data-test="client-cpf" required placeholder="Digite seu CPF..." id="cpf"  value={cpf} onChange={(e)=> setCpf(e.target.value)}/>
                     
                    
                     <button type="submit" data-test="book-seat-btn" >Reservar Assento(s)</button>

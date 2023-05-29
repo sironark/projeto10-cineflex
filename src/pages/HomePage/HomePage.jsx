@@ -19,7 +19,7 @@ export default function HomePage() {
     },[]);
 
     
-    if(arrayMovies === []){
+    if(arrayMovies == []){
         return (
         <PageContainer>
             Carregando.....
@@ -33,8 +33,8 @@ export default function HomePage() {
 
             <ListContainer>
                 {arrayMovies.map(movie => (
-                    <Link to={`/sessions/${movie.id}`} key={movie.id}>
-                    <MovieContainer data-test="movie">
+                    <Link data-test="movie" to={`/sessions/${movie.id}`} key={movie.id}>
+                    <MovieContainer >
                         
                             <img src={movie.posterURL} alt="poster"/>
                        
