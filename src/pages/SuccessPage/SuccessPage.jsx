@@ -1,6 +1,12 @@
+import { useEffect } from "react"
 import styled from "styled-components"
 
-export default function SuccessPage() {
+export default function SuccessPage(props) {
+   
+    useEffect (() => {
+        console.log(props.cadeirasCompradas)
+    } , []);
+    
 
     return (
         <PageContainer>
@@ -14,9 +20,12 @@ export default function SuccessPage() {
 
             <TextContainer>
                 <strong><p>Ingressos</p></strong>
-                <p>Assento 01</p>
-                <p>Assento 02</p>
-                <p>Assento 03</p>
+                {props.cadeirasCompradas.map( sessao =>(
+
+                    <p key={sessao}>Assento {sessao}</p>
+                ))}
+                
+                
             </TextContainer>
 
             <TextContainer>

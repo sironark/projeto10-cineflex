@@ -1,56 +1,185 @@
+import axios from "axios";
+import { useEffect, useState } from "react"
+import { Link, useNavigate, useParams } from "react-router-dom";
 import styled from "styled-components"
 
-export default function SeatsPage() {
+export default function SeatsPage(props) {
+
+    const [seats, setSeats] = useState([]);
+    const [waiting, setWaiting] = useState(false);
+    const params1 = useParams();
+    const [arraySelecionados, setSelecionados] = useState([]);
+   
+    
+    const [cpf, setCpf] = useState('');
+    const [name, setName] = useState('');
+    const [filme, setFilme] = useState('');
+    const [data, setData] = useState('');
+    const [hora, setHora] = useState('');
+    const [cadeiraArray, setCadeiraArray] = useState ([])
+
+  // const objeto {cpf, setCpf, name, setName, cadeiraArray, setCadeiraArray, filme, setFilme, data, setData, hora, setHora} = props
+
+    const navigate = useNavigate()
+    
+
+    useEffect(() => {
+       
+        const promisse = axios.get(`https://mock-api.driven.com.br/api/v8/cineflex/showtimes/${params1.idSessao}/seats`)
+
+        promisse.then((resposta) => {
+            console.log(resposta.data)
+            setSeats(resposta.data)
+            setWaiting(true)
+           
+
+     
+        })
+
+        promisse.catch((erro) =>{
+            console.log(erro.response.data)
+        })
+
+       
+    }, []);
+
+
+
+    function selecionarCadeira(cadeira){
+        console.log(cadeira.isAvailable)
+        
+        
+        
+
+        if(cadeira.isAvailable === false){
+            alert("Esse assento não está disponível")
+        } else if(!arraySelecionados.includes(cadeira.id)){
+            let arrayAux = [...arraySelecionados, cadeira.id];
+            setSelecionados(arrayAux)
+            
+            const auxCadeira = [...cadeiraArray, cadeira.name]
+            setCadeiraArray(auxCadeira)
+
+        }else{
+            const arrayAux2 = [...arraySelecionados];
+            const index = arrayAux2.indexOf(cadeira.id)
+            arrayAux2.splice(index, 1)
+            setSelecionados(arrayAux2)
+
+            const arrayAux3 = [...cadeiraArray];
+            const index1 = arrayAux3.indexOf(cadeira.name)
+            arrayAux3.splice(index1, 1)
+            setCadeiraArray(arrayAux3)
+            
+        }
+        
+
+    }
+
+  
+
+    function reservar(e){
+        e.preventDefault();
+        
+        //props.alerta(cpf, name, filme, data, hora, cadeiraArray)
+
+        const URL_API = "https://mock-api.driven.com.br/api/v8/cineflex/seats/book-many"
+
+        const objPost = {
+            ids: arraySelecionados,
+            name: name,
+            cpf: cpf
+        } 
+
+        const promisse = axios.post(URL_API, objPost)
+        promisse.then(resposta => {
+            console.log("salva")
+            navigate(`/success`)
+            
+        })
+        promisse.catch(erro => console.log(erro.response.data))
+        
+    
+    }
+        
+
+
+    if (waiting === false){
+        return <div>Carregando.....</div>
+    }else{
 
     return (
         <PageContainer>
             Selecione o(s) assento(s)
 
             <SeatsContainer>
-                <SeatItem>01</SeatItem>
-                <SeatItem>02</SeatItem>
-                <SeatItem>03</SeatItem>
-                <SeatItem>04</SeatItem>
-                <SeatItem>05</SeatItem>
+                {seats.seats.map(cadeira => (
+                    
+                    <SeatItem key={cadeira.id}
+                    cadeiraId = {cadeira.id}
+                    disponivel = {cadeira.isAvailable}
+                    arraySelecionados = {arraySelecionados}
+                    onClick={()=> selecionarCadeira(cadeira)}
+                    >
+                    {cadeira.name}
+                    </SeatItem>
+                    
+                  
+                ))}
             </SeatsContainer>
 
             <CaptionContainer>
                 <CaptionItem>
-                    <CaptionCircle />
+                    <CaptionCircle  verde = {true}
+                                    amarelo = {false}
+                                    cinza = {false}/>
                     Selecionado
                 </CaptionItem>
                 <CaptionItem>
-                    <CaptionCircle />
+                    <CaptionCircle verde = {false}
+                                    amarelo = {false}
+                                    cinza = {true}/>
                     Disponível
                 </CaptionItem>
                 <CaptionItem>
-                    <CaptionCircle />
+                    <CaptionCircle verde = {false}
+                                    amarelo = {true}
+                                    cinza = {false}/>
                     Indisponível
                 </CaptionItem>
             </CaptionContainer>
 
-            <FormContainer>
-                Nome do Comprador:
-                <input placeholder="Digite seu nome..." />
 
-                CPF do Comprador:
-                <input placeholder="Digite seu CPF..." />
+           
+                <FormContainer onSubmit={reservar}>
+                    
+                <label htmlFor="name"> Nome do Comprador:</label>
+                    <input required placeholder="Digite seu nome..." id="name" value={name} onChange={(e)=> setName(e.target.value)}/>
 
-                <button>Reservar Assento(s)</button>
-            </FormContainer>
+                    <label htmlFor="cpf">  CPF do Comprador:</label>
+                    <input required placeholder="Digite seu CPF..." id="cpf"  value={cpf} onChange={(e)=> setCpf(e.target.value)}/>
+                    
+                   
+                    <button type="submit" >Reservar Assento(s)</button>
+                   
+                </FormContainer>
+           
 
+
+            
             <FooterContainer>
                 <div>
-                    <img src={"https://br.web.img2.acsta.net/pictures/22/05/16/17/59/5165498.jpg"} alt="poster" />
+                    <img src={seats.movie.posterURL} alt="poster" />
                 </div>
                 <div>
-                    <p>Tudo em todo lugar ao mesmo tempo</p>
-                    <p>Sexta - 14h00</p>
+                    <p>{seats.movie.title}</p>
+                    <p>{seats.day.date} - {seats.name}</p>
                 </div>
             </FooterContainer>
 
         </PageContainer>
     )
+    }
 }
 
 const PageContainer = styled.div`
@@ -74,7 +203,7 @@ const SeatsContainer = styled.div`
     justify-content: center;
     margin-top: 20px;
 `
-const FormContainer = styled.div`
+const FormContainer = styled.form`
     width: calc(100vw - 40px); 
     display: flex;
     flex-direction: column;
@@ -96,8 +225,8 @@ const CaptionContainer = styled.div`
     margin: 20px;
 `
 const CaptionCircle = styled.div`
-    border: 1px solid blue;         // Essa cor deve mudar
-    background-color: lightblue;    // Essa cor deve mudar
+    border: 1px solid ${props => (props.verde === true ? "#0E7D71": props.amarelo === true ? "#F7C52B" : props.cinza === true ? "#7B8B99" :"")};
+    background-color: ${props => (props.verde === true ? "#1AAE9E": props.amarelo === true ? "#FBE192D9" : props.cinza === true ? "#C3CFD9" :"")};   
     height: 25px;
     width: 25px;
     border-radius: 25px;
@@ -113,8 +242,8 @@ const CaptionItem = styled.div`
     font-size: 12px;
 `
 const SeatItem = styled.div`
-    border: 1px solid blue;         // Essa cor deve mudar
-    background-color: lightblue;    // Essa cor deve mudar
+    border: 1px solid ${props => (props.disponivel === false ? "#F7C52B" : "#7B8B99")};
+    background-color: ${props => (props.disponivel === false ? "#FBE192" : props.arraySelecionados.includes(props.cadeiraId) ? "#1AAE9E" : "#C3CFD9")};
     height: 25px;
     width: 25px;
     border-radius: 25px;

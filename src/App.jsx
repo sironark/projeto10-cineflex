@@ -4,18 +4,50 @@ import SeatsPage from "./pages/SeatsPage/SeatsPage"
 import SessionsPage from "./pages/SessionsPage/SessionsPage"
 import SuccessPage from "./pages/SuccessPage/SuccessPage"
 import axios from "axios"
+import { BrowserRouter, Routes, Route, Link } from "react-router-dom"
+import { useState } from "react"
+
 
 export default function App() {
     axios.defaults.headers.common['Authorization'] = 'FZDhg494Dgn2xZqHQFRsoKcp';
-    return (
-        <>
-           <NavContainer>CINEFLEX</NavContainer>
 
-            <HomePage />
-            {/* <SeatsPage /> */}
-            {/* <SessionsPage /> */}
-            {/* <SuccessPage /> */}
-        </>
+    const [cpf, setCpf] = useState('');
+    const [name, setName] = useState('');
+    const [cadeirasCompradas, setCadeirasCompradas] = useState([]);
+    const [filme, setFilme] = useState('');
+    const [data, setData] = useState('');
+    const [hora, setHora] = useState('');
+
+
+function alerta(props){
+    let aux = [...cadeirasCompradas]
+    aux = props.cadeiraArray
+    
+    setCadeirasCompradas(aux)
+}
+
+    return (
+        <BrowserRouter>
+           <NavContainer>
+            <Link to='/'>
+            CINEFLEX
+            </Link>
+            </NavContainer>
+
+            <Routes>
+                <Route path="/" element= { <HomePage />}/>
+                <Route path="/seats/:idSessao" element= { <SeatsPage alerta = {alerta}
+                    cpf ={cpf} setCpf = {setCpf} name = {name} setName = {setName}
+
+                    />}/>
+                <Route path="/sessions/:idFilme" element= { <SessionsPage  />}/>
+                <Route path="/success" element= { <SuccessPage cadeirasCompradas = {cadeirasCompradas} 
+                    cpf ={cpf} setCpf = {setCpf} name = {name} setName = {setName}
+                
+                    /> }/>
+            </Routes>
+
+        </BrowserRouter>
     )
 }
 

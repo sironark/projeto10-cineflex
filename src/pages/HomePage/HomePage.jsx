@@ -1,7 +1,8 @@
 import axios from "axios"
 import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import styled from "styled-components"
-//import { Link } from "react-router-dom";
+//import { Link, useParams } from "react-router-dom"
 
 export default function HomePage() {
     const [arrayMovies, setArrayMovies] = useState([]);
@@ -26,11 +27,13 @@ export default function HomePage() {
 
             <ListContainer>
                 {arrayMovies.map(movie => (
-                    <MovieContainer key={movie.id}>
+                    <Link to={`/sessions/${movie.id}`} key={movie.id}>
+                    <MovieContainer >
                         
                             <img src={movie.posterURL} alt="poster"/>
                        
                 </MovieContainer>
+                </Link>
                 ))}
                 
 
