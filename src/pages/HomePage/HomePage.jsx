@@ -19,7 +19,13 @@ export default function HomePage() {
     },[]);
 
     
-    
+    if(arrayMovies === []){
+        return (
+        <PageContainer>
+            Carregando.....
+        </PageContainer>
+        )
+    }else{
     
     return (
         <PageContainer>
@@ -28,7 +34,7 @@ export default function HomePage() {
             <ListContainer>
                 {arrayMovies.map(movie => (
                     <Link to={`/sessions/${movie.id}`} key={movie.id}>
-                    <MovieContainer >
+                    <MovieContainer data-test="movie">
                         
                             <img src={movie.posterURL} alt="poster"/>
                        
@@ -42,6 +48,7 @@ export default function HomePage() {
 
         </PageContainer>
     )
+                }
 }
 
 const PageContainer = styled.div`

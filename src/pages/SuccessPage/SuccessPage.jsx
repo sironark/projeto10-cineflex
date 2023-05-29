@@ -6,19 +6,19 @@ export default function SuccessPage(props) {
     useEffect (() => {
         console.log(props.cadeirasCompradas)
     } , []);
-    
+
 
     return (
         <PageContainer>
             <h1>Pedido feito <br /> com sucesso!</h1>
 
-            <TextContainer>
+            <TextContainer data-test="movie-info" >
                 <strong><p>Filme e sessão</p></strong>
                 <p>Tudo em todo lugar ao mesmo tempo</p>
                 <p>03/03/2023 - 14:00</p>
             </TextContainer>
 
-            <TextContainer>
+            <TextContainer data-test="seats-info">
                 <strong><p>Ingressos</p></strong>
                 {props.cadeirasCompradas.map( sessao =>(
 
@@ -28,13 +28,13 @@ export default function SuccessPage(props) {
                 
             </TextContainer>
 
-            <TextContainer>
+            <TextContainer data-test="client-info" >
                 <strong><p>Comprador</p></strong>
                 <p>Nome: Letícia Chijo</p>
                 <p>CPF: 123.456.789-10</p>
             </TextContainer>
-
-            <button>Voltar para Home</button>
+                
+            <button data-test="go-home-btn">Voltar para Home</button>
         </PageContainer>
     )
 }
