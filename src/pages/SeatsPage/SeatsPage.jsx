@@ -17,8 +17,6 @@ export default function SeatsPage() {
     const [hora, setHora] = useState('');
     const [cadeiraArray, setCadeiraArray] = useState ([])
 
-  // const objeto {cpf, setCpf, name, setName, cadeiraArray, setCadeiraArray, filme, setFilme, data, setData, hora, setHora} = props
-
     const navigate = useNavigate()
     
 
@@ -84,11 +82,6 @@ export default function SeatsPage() {
 
     function reservar(e){
         e.preventDefault();
-        
-        
-        
-        //props.alerta(cpf, name, filme, data, hora, cadeiraArray)
-
         const URL_API = "https://mock-api.driven.com.br/api/v8/cineflex/seats/book-many"
 
         const objPost = {
@@ -105,8 +98,6 @@ export default function SeatsPage() {
             
         })
         promisse.catch(erro => console.log(erro.response.data))
-        
-    
     }
     
 
@@ -165,7 +156,7 @@ export default function SeatsPage() {
                     <input data-test="client-name" required placeholder="Digite seu nome..." id="name" value={name} onChange={(e)=> setName(e.target.value)}/>
 
                     <label htmlFor="cpf">  CPF do Comprador:</label>
-                    <input pattern="\d{3}\.\d{3}\.\d{3}-\d{2}" data-test="client-cpf" required placeholder="Digite seu CPF..." id="cpf"  value={cpf} onChange={(e)=> setCpf(e.target.value)}/>
+                    <input  data-test="client-cpf" required placeholder="Digite seu CPF..." id="cpf"  value={cpf} onChange={(e)=> setCpf(e.target.value)}/>
                     
                    
                     <button disabled = {false} type="submit" data-test="book-seat-btn" >Reservar Assento(s)</button>
@@ -181,7 +172,7 @@ export default function SeatsPage() {
                 </div>
                 <div>
                     <p>{seats.movie.title}</p>
-                    <p>{seats.day.date} - {seats.name}</p>
+                    <p>{seats.day.weekday} - {seats.name}</p>
                 </div>
             </FooterContainer>
 

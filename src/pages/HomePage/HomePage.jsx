@@ -10,7 +10,6 @@ export default function HomePage() {
     useEffect(() => {
         const promisse = axios.get('https://mock-api.driven.com.br/api/v8/cineflex/movies');
         promisse.then((resposta) => {
-            console.log(resposta.data);
             setArrayMovies(resposta.data);
         });
         promisse.catch((erro) => {
