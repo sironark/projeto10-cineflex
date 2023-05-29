@@ -1,15 +1,14 @@
 import axios from "axios";
 import { useEffect, useState } from "react"
-import { Link, useNavigate, useParams } from "react-router-dom";
+import {  useNavigate, useParams } from "react-router-dom";
 import styled from "styled-components"
 
-export default function SeatsPage(props) {
+export default function SeatsPage() {
 
     const [seats, setSeats] = useState([]);
     const [waiting, setWaiting] = useState(false);
     const params1 = useParams();
     const [arraySelecionados, setSelecionados] = useState([]);
-   
     
     const [cpf, setCpf] = useState('');
     const [name, setName] = useState('');
@@ -32,7 +31,7 @@ export default function SeatsPage(props) {
             setSeats(resposta.data)
             setWaiting(true)
             setCadeiraArray([]);
-            
+
      
         })
 
@@ -81,11 +80,11 @@ export default function SeatsPage(props) {
 
     }
 
-  
+    
 
     function reservar(e){
         e.preventDefault();
-
+        
         
         
         //props.alerta(cpf, name, filme, data, hora, cadeiraArray)
@@ -97,19 +96,19 @@ export default function SeatsPage(props) {
             name: name,
             cpf: cpf
         } 
-
+        
         const promisse = axios.post(URL_API, objPost)
         promisse.then((resposta) => {
             console.log(resposta)
             console.log("salva")
-            navigate(`/success`, {state:{cpf, name, filme, data, hora, cadeiraArray}})
+            navigate(`/sucesso`, {state:{cpf, name, filme, data, hora, cadeiraArray}})
             
         })
         promisse.catch(erro => console.log(erro.response.data))
         
     
     }
-        
+    
 
 
     if (waiting === false){
@@ -169,7 +168,7 @@ export default function SeatsPage(props) {
                     <input pattern="\d{3}\.\d{3}\.\d{3}-\d{2}" data-test="client-cpf" required placeholder="Digite seu CPF..." id="cpf"  value={cpf} onChange={(e)=> setCpf(e.target.value)}/>
                     
                    
-                    <button type="submit" data-test="book-seat-btn" >Reservar Assento(s)</button>
+                    <button disabled = {false} type="submit" data-test="book-seat-btn" >Reservar Assento(s)</button>
                    
                 </FormContainer>
            

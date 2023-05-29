@@ -36,12 +36,12 @@ function alerta(props){
 
             <Routes>
                 <Route path="/" element= { <HomePage />}/>
-                <Route path="/seats/:idSessao" element= { <SeatsPage alerta = {alerta}
+                <Route path="/assentos/:idSessao" element= { <SeatsPage alerta = {alerta}
                     cpf ={cpf} setCpf = {setCpf} name = {name} setName = {setName}
 
                     />}/>
-                <Route path="/sessions/:idFilme" element= { <SessionsPage  />}/>
-                <Route path="/success" element= { <SuccessPage cadeirasCompradas = {cadeirasCompradas} 
+                <Route path="/sessoes/:idFilme" element= { <SessionsPage  />}/>
+                <Route path="/sucesso" element= { <SuccessPage cadeirasCompradas = {cadeirasCompradas} 
                     cpf ={cpf} setCpf = {setCpf} name = {name} setName = {setName}
                 
                     /> }/>
